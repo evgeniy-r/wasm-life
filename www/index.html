@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Life</title>
+    <link rel="icon" type="image/svg+xml" href="https://www.rust-lang.org/static/images/favicon.svg">
+    <style>
+      button {
+        font-size: large;
+        display: block;
+        margin-top: 1em;
+      }
+      .info {
+        position: fixed;
+        top: 0;
+        right: 0;
+        padding: 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
+    <script src="./bootstrap.js"></script>
+    <div class="container">
+      <canvas id="canvas" width="1600" height="800"></canvas>
+      <div class="info">
+        <h2 id="turn">0</h2>
+        <button id="nextBtn1">Next</button>
+        <button id="nextBtn10">Next 10</button>
+        <button id="nextBtn100">Next 100</button>
+      </div>
+    </div>
+  </body>
+</html>
