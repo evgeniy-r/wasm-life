@@ -49,10 +49,11 @@ impl Board {
     }
 
     pub fn fill_with_random(&mut self, area_size: usize, density: f64) {
+        let width = self.width;
         for y in (self.height - area_size) / 2..(self.height + area_size) / 2 {
-            for x in (self.width - area_size) / 2..(self.width + area_size) / 2 {
+            for x in (width - area_size) / 2..(width + area_size) / 2 {
                 if self.rng.is_alive(density) {
-                    self.cells.insert(y * self.width + x);
+                    self.cells.insert(y * width + x);
                     self.renderer.alive(x, y);
                 }
             }
@@ -60,20 +61,21 @@ impl Board {
     }
 
     pub fn next(&mut self) {
+        let width = self.width;
         let mut next_cells = self.cells.clone();
 
         for y in 1..self.height - 1 {
-            for x in 1..self.width - 1 {
-                let index = y * self.width + x;
+            for x in 1..width - 1 {
+                let index = y * width + x;
 
-                let count = self.cells[index - self.width - 1] as u8
-                    + self.cells[index - self.width] as u8
-                    + self.cells[index - self.width + 1] as u8
+                let count = self.cells[index - width - 1] as u8
+                    + self.cells[index - width] as u8
+                    + self.cells[index - width + 1] as u8
                     + self.cells[index - 1] as u8
                     + self.cells[index + 1] as u8
-                    + self.cells[index + self.width - 1] as u8
-                    + self.cells[index + self.width] as u8
-                    + self.cells[index + self.width + 1] as u8;
+                    + self.cells[index + width - 1] as u8
+                    + self.cells[index + width] as u8
+                    + self.cells[index + width + 1] as u8;
 
                 if self.cells[index] {
                     if count < MIN || count > MAX {
