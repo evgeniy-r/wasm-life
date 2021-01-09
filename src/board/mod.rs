@@ -8,8 +8,8 @@ use fixedbitset::FixedBitSet;
 use random::{JsRng, Random};
 use renderer::{CanvasRenderer, Render};
 
-const WIDTH: usize = 1600;
-const HEIGHT: usize = 800;
+pub const WIDTH: usize = 1600;
+pub const HEIGHT: usize = 800;
 
 const MIN: u8 = 2;
 const MAX: u8 = 3;
