@@ -1,69 +1,49 @@
-<div align="center">
+# "Life" game in WebAssembly  
 
-  <h1><code>wasm-pack-template</code></h1>
+This is Conway's [Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) written in Rust (and then compiled to `*.wasm`).
 
-  <strong>A template for kick starting a Rust and WebAssembly project using <a href="https://github.com/rustwasm/wasm-pack">wasm-pack</a>.</strong>
+It is inspired by [this tutorial](https://rustwasm.github.io/book/game-of-life/implementing.html#implementing-conways-game-of-life), 
+but I used my own implementation: I worked with a large field size (more than a million cells), used manipulations with
+`ImageData.data` for rendering, and also implemented a slightly different UI.
 
-  <p>
-    <a href="https://travis-ci.org/rustwasm/wasm-pack-template"><img src="https://img.shields.io/travis/rustwasm/wasm-pack-template.svg?style=flat-square" alt="Build Status" /></a>
-  </p>
+I made the implementation of game rules itself testable without a compilation to `wasm`. 
 
-  <h3>
-    <a href="https://rustwasm.github.io/docs/wasm-pack/tutorials/npm-browser-packages/index.html">Tutorial</a>
-    <span> | </span>
-    <a href="https://discordapp.com/channels/442252698964721669/443151097398296587">Chat</a>
-  </h3>
+Installation (I tested it on Linux Ubuntu and MS Windows):
 
-  <sub>Built with 🦀🕸 by <a href="https://rustwasm.github.io/">The Rust and WebAssembly Working Group</a></sub>
-</div>
+* Install [Node.js and npm](https://nodejs.org).
 
-## About
+* Install [rustup](https://rustup.rs/) toolchain.
 
-[**📚 Read this template tutorial! 📚**][template-docs]
+* Install [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/).
 
-This template is designed for compiling Rust libraries into WebAssembly and
-publishing the resulting package to NPM.
-
-Be sure to check out [other `wasm-pack` tutorials online][tutorials] for other
-templates and usages of `wasm-pack`.
-
-[tutorials]: https://rustwasm.github.io/docs/wasm-pack/tutorials/index.html
-[template-docs]: https://rustwasm.github.io/docs/wasm-pack/tutorials/npm-browser-packages/index.html
-
-## 🚴 Usage
-
-### 🐑 Use `cargo generate` to Clone this Template
-
-[Learn more about `cargo generate` here.](https://github.com/ashleygwilliams/cargo-generate)
-
-```
-cargo generate --git https://github.com/rustwasm/wasm-pack-template.git --name my-project
-cd my-project
-```
-
-### 🛠️ Build with `wasm-pack build`
-
-```
+* Clone this repository and build a JS package:
+```shell
+git clone git@github.com:evgeniy-r/wasm-life.git
+cd wasm-life
 wasm-pack build
 ```
 
-### 🔬 Test in Headless Browsers with `wasm-pack test`
-
-```
-wasm-pack test --headless --firefox
-```
-
-### 🎁 Publish to NPM with `wasm-pack publish`
-
-```
-wasm-pack publish
+* Install npm packages and run `webpack-dev-server`:
+```shell
+cd www
+npm install
+npm run start
 ```
 
-## 🔋 Batteries Included
+* Open [http://localhost:8080](http://localhost:8080) in a web browser.
 
-* [`wasm-bindgen`](https://github.com/rustwasm/wasm-bindgen) for communicating
-  between WebAssembly and JavaScript.
-* [`console_error_panic_hook`](https://github.com/rustwasm/console_error_panic_hook)
-  for logging panic messages to the developer console.
-* [`wee_alloc`](https://github.com/rustwasm/wee_alloc), an allocator optimized
-  for small code size.
+You can change a canvas size in the [index.js](www/index.js) and [index.html](www/index.html) files.
+
+You can run tests (they are very basic):
+* the unit tests without a `wasm` compilation (only the implementation of the game rules):
+```shell
+cargo test
+```
+* the integration tests with the compilation (you can use different browsers):
+```shell
+wasm-pack test --firefox --headless
+```
+or if you want to see the test results in the browser:
+```shell
+wasm-pack test --firefox
+```
