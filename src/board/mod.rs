@@ -8,6 +8,8 @@ use fixedbitset::FixedBitSet;
 use random::{JsRng, Random};
 use renderer::{CanvasRenderer, Render};
 
+const ALIVE_CHAR: char = 'O';
+
 const MIN: u8 = 2;
 const MAX: u8 = 3;
 const BORN: u8 = 3;
@@ -55,6 +57,19 @@ impl Board {
                 if self.rng.is_alive(density) {
                     self.cells.insert(y * width + x);
                     self.renderer.alive(x, y);
+                }
+            }
+        }
+    }
+
+    pub fn load(&mut self, s: &str, start_x: usize, start_y: usize) {
+        let width = self.width;
+
+        for (y, line) in s.split("\n").enumerate() {
+            for (x, char) in line.chars().enumerate() {
+                if char == ALIVE_CHAR {
+                    self.cells.insert((start_y + y) * width + start_x + x);
+                    self.renderer.alive(start_x + x, start_y + y);
                 }
             }
         }
@@ -121,17 +136,17 @@ mod tests {
         }
     }
 
-    fn board() -> Board {
+    fn board(width: usize, height: usize) -> Board {
         let renderer = MockRenderer {};
         let rng = RsRng {
             g: rand::thread_rng(),
         };
-        Board::new(Box::new(renderer), Box::new(rng), 200, 200)
+        Board::new(Box::new(renderer), Box::new(rng), width, height)
     }
 
     #[test]
-    fn no_errors() {
-        let mut board = board();
+    fn fill_with_random() {
+        let mut board = board(200, 200);
 
         board.fill_with_random(100, 0.3);
         board.render();
@@ -139,5 +154,39 @@ mod tests {
         board.render();
 
         assert_eq!(1, board.turn);
+    }
+
+    #[test]
+    fn load() {
+        let start_position = ".O..\n.O\n.O\n.";
+        let mut board = board(6, 6);
+
+        board.load(start_position, 1, 1);
+        board.render();
+
+        assert!(!board.cells[6 + 1]);
+        assert!(board.cells[6 + 2]);
+        assert!(!board.cells[6 + 3]);
+        assert!(!board.cells[2 * 6 + 1]);
+        assert!(board.cells[2 * 6 + 2]);
+        assert!(!board.cells[2 * 6 + 3]);
+        assert!(!board.cells[3 * 6 + 1]);
+        assert!(board.cells[3 * 6 + 2]);
+        assert!(!board.cells[3 * 6 + 3]);
+
+        board.next();
+        board.render();
+
+        assert_eq!(1, board.turn);
+
+        assert!(!board.cells[6 + 1]);
+        assert!(!board.cells[6 + 2]);
+        assert!(!board.cells[6 + 3]);
+        assert!(board.cells[2 * 6 + 1]);
+        assert!(board.cells[2 * 6 + 2]);
+        assert!(board.cells[2 * 6 + 3]);
+        assert!(!board.cells[3 * 6 + 1]);
+        assert!(!board.cells[3 * 6 + 2]);
+        assert!(!board.cells[3 * 6 + 3]);
     }
 }
