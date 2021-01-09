@@ -11,11 +11,14 @@ wasm_bindgen_test_configure!(run_in_browser);
 
 #[wasm_bindgen_test]
 fn no_errors() {
+    let width = 200;
+    let height = 100;
+
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.create_element("canvas").unwrap();
     canvas.set_id("testCanvas");
-    canvas.set_attribute("width", &WIDTH.to_string()).unwrap();
-    canvas.set_attribute("height", &HEIGHT.to_string()).unwrap();
+    canvas.set_attribute("width", &width.to_string()).unwrap();
+    canvas.set_attribute("height", &height.to_string()).unwrap();
     document.body().unwrap().append_child(&canvas).unwrap();
 
     let mut board = Board::for_canvas("testCanvas", width, height);
