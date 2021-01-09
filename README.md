@@ -1,4 +1,4 @@
-# "Life" game in WebAssembly  
+# Conway's Game of Life in WebAssembly  
 
 This is Conway's [Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) written in Rust (and then compiled to `*.wasm`).
 
