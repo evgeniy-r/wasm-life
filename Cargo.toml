@@ -2,6 +2,7 @@
 name = "life"
 version = "0.1.0"
 authors = ["Evgeniy Rashchepkin <e.a.rashchepkin@gmail.com>"]
+repository = "https://github.com/evgeniy-r/wasm-life"
 edition = "2018"
 description = "WAsm Life"
 license = "MIT"
