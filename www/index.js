@@ -1,7 +1,7 @@
 import { Board } from 'life';
 
-const board = Board.for_canvas('canvas');
-board.fill_with_random(400, 0.3);
+const board = Board.for_canvas('canvas', 1600, 800);
+board.fill_with_random(400, 0.8);
 board.render();
 
 const turnLabel = document.getElementById('turn');

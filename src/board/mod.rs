@@ -8,15 +8,14 @@ use fixedbitset::FixedBitSet;
 use random::{JsRng, Random};
 use renderer::{CanvasRenderer, Render};
 
-pub const WIDTH: usize = 1600;
-pub const HEIGHT: usize = 800;
-
 const MIN: u8 = 2;
 const MAX: u8 = 3;
 const BORN: u8 = 3;
 
 #[wasm_bindgen]
 pub struct Board {
+    width: usize,
+    height: usize,
     cells: FixedBitSet,
     pub turn: u32,
     renderer: Box<dyn Render>,
@@ -25,19 +24,23 @@ pub struct Board {
 
 #[wasm_bindgen]
 impl Board {
-    pub fn for_canvas(canvas_id: &str) -> Self {
+    pub fn for_canvas(canvas_id: &str, width: usize, height: usize) -> Self {
         utils::set_panic_hook();
         Self::new(
-            Box::new(CanvasRenderer::new(canvas_id)),
+            Box::new(CanvasRenderer::new(canvas_id, width, height)),
             Box::new(JsRng::new()),
+            width,
+            height,
         )
     }
 
-    fn new(renderer: Box<dyn Render>, rng: Box<dyn Random>) -> Self {
-        let cells = FixedBitSet::with_capacity(WIDTH * HEIGHT);
+    fn new(renderer: Box<dyn Render>, rng: Box<dyn Random>, width: usize, height: usize) -> Self {
+        let cells = FixedBitSet::with_capacity(width * height);
         let turn = 0;
 
         Self {
+            width,
+            height,
             cells,
             turn,
             renderer,
@@ -46,10 +49,11 @@ impl Board {
     }
 
     pub fn fill_with_random(&mut self, area_size: usize, density: f64) {
-        for y in (HEIGHT - area_size) / 2..(HEIGHT + area_size) / 2 {
-            for x in (WIDTH - area_size) / 2..(WIDTH + area_size) / 2 {
+        let width = self.width;
+        for y in (self.height - area_size) / 2..(self.height + area_size) / 2 {
+            for x in (width - area_size) / 2..(width + area_size) / 2 {
                 if self.rng.is_alive(density) {
-                    self.cells.insert(y * WIDTH + x);
+                    self.cells.insert(y * width + x);
                     self.renderer.alive(x, y);
                 }
             }
@@ -57,20 +61,21 @@ impl Board {
     }
 
     pub fn next(&mut self) {
+        let width = self.width;
         let mut next_cells = self.cells.clone();
 
-        for y in 1..HEIGHT - 1 {
-            for x in 1..WIDTH - 1 {
-                let index = y * WIDTH + x;
+        for y in 1..self.height - 1 {
+            for x in 1..width - 1 {
+                let index = y * width + x;
 
-                let count = self.cells[index - WIDTH - 1] as u8
-                    + self.cells[index - WIDTH] as u8
-                    + self.cells[index - WIDTH + 1] as u8
+                let count = self.cells[index - width - 1] as u8
+                    + self.cells[index - width] as u8
+                    + self.cells[index - width + 1] as u8
                     + self.cells[index - 1] as u8
                     + self.cells[index + 1] as u8
-                    + self.cells[index + WIDTH - 1] as u8
-                    + self.cells[index + WIDTH] as u8
-                    + self.cells[index + WIDTH + 1] as u8;
+                    + self.cells[index + width - 1] as u8
+                    + self.cells[index + width] as u8
+                    + self.cells[index + width + 1] as u8;
 
                 if self.cells[index] {
                     if count < MIN || count > MAX {
@@ -121,7 +126,7 @@ mod tests {
         let rng = RsRng {
             g: rand::thread_rng(),
         };
-        Board::new(Box::new(renderer), Box::new(rng))
+        Board::new(Box::new(renderer), Box::new(rng), 200, 200)
     }
 
     #[test]
