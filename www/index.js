@@ -1,6 +1,6 @@
 import { Board } from 'life';
 
-const board = Board.for_canvas('canvas');
+const board = Board.for_canvas('canvas', 1600, 800);
 board.fill_with_random(400, 0.3);
 board.render();
 

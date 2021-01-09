@@ -21,7 +21,7 @@ fn no_errors() {
     canvas.set_attribute("height", &height.to_string()).unwrap();
     document.body().unwrap().append_child(&canvas).unwrap();
 
-    let mut board = Board::for_canvas("testCanvas");
+    let mut board = Board::for_canvas("testCanvas", width, height);
     board.fill_with_random(100, 0.4);
     board.render();
     board.next();
